@@ -1,6 +1,7 @@
 import Lab from "@/models/lab.model";
 import { connectDB } from "@/lib/db";
 import Link from "next/link";
+import React from "react";
 
 export default async function LabsPage() {
   await connectDB();

@@ -25,6 +25,10 @@ export default function Navbar() {
             Create
           </Link>
 
+          <Link href="/dashboard" className="hover:opacity-70">
+            Dashboard
+          </Link>
+
           {/* Auth State */}
           {status === "loading" ? null : session?.user ? (
             <div className="flex items-center gap-3">

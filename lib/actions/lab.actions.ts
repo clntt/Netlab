@@ -44,3 +44,24 @@ export async function createLab(formData: {
 
   redirect("/labs");
 }
+export async function getMyLabs(email: string) {
+  await connectDB();
+
+  const user = await User.findOne({ email });
+
+  if (!user) return [];
+
+  const labs = await Lab.find({
+    author: user._id,
+  })
+    .sort({ createdAt: -1 })
+    .lean();
+
+  return labs.map((lab) => ({
+    _id: lab._id.toString(),
+    title: lab.title,
+    description: lab.description,
+    difficulty: lab.difficulty,
+    createdAt: lab.createdAt,
+  }));
+}
