@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
-
+import ThemeToggle from "./theme-toggle";
 export default function Navbar() {
   const { data: session, status } = useSession();
 
@@ -21,13 +21,14 @@ export default function Navbar() {
             Labs
           </Link>
 
-          <Link href="/dashboard" className="hover:opacity-70">
-            Dashboard
+          <Link href="/create" className="hover:opacity-70">
+            Create
           </Link>
 
           {/* Auth State */}
           {status === "loading" ? null : session?.user ? (
             <div className="flex items-center gap-3">
+              <ThemeToggle />
               <span className="text-muted-foreground">{session.user.name}</span>
 
               <Button

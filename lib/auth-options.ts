@@ -1,0 +1,46 @@
+import GoogleProvider from "next-auth/providers/google";
+import { connectDB } from "@/lib/db";
+import User from "@/models/user.model";
+
+export const authOptions = {
+  providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+  ],
+
+  callbacks: {
+    async signIn({ user }) {
+      await connectDB();
+
+      let dbUser = await User.findOne({
+        email: user.email,
+      });
+
+      if (!dbUser) {
+        dbUser = await User.create({
+          name: user.name,
+          email: user.email,
+          image: user.image,
+        });
+      }
+
+      return true;
+    },
+
+    async session({ session }) {
+      await connectDB();
+
+      const dbUser = await User.findOne({
+        email: session.user.email,
+      });
+
+      if (dbUser && session.user) {
+        session.user.id = dbUser._id.toString();
+      }
+
+      return session;
+    },
+  },
+};

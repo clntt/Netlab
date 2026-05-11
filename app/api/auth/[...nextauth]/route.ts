@@ -1,41 +1,62 @@
-import NextAuth, { type NextAuthOptions } from "next-auth";
+// import NextAuth from "next-auth";
+// import GoogleProvider from "next-auth/providers/google";
 
-import GitHub from "next-auth/providers/github";
-import Google from "next-auth/providers/google";
+// import { connectDB } from "@/lib/db";
+// import User from "@/models/user.model";
 
-export const authOptions: NextAuthOptions = {
-  providers: [
-    GitHub({
-      clientId: process.env.GITHUB_CLIENT_ID!,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-    }),
+// const handler = NextAuth({
+//   providers: [
+//     GoogleProvider({
+//       clientId: process.env.GOOGLE_CLIENT_ID!,
+//       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+//     }),
+//   ],
 
-    Google({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
-  ],
+//   session: {
+//     strategy: "jwt",
+//   },
 
-  session: {
-    strategy: "jwt",
-  },
+//   callbacks: {
+//     async signIn({ user }) {
+//       await connectDB();
 
-  pages: {
-    signIn: "/login",
-  },
+//       const existingUser = await User.findOne({ email: user.email });
 
-  secret: process.env.NEXTAUTH_SECRET,
+//       if (!existingUser) {
+//         const newUser = await User.create({
+//           name: user.name,
+//           email: user.email,
+//           image: user.image,
+//         });
 
-  callbacks: {
-    async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.sub!;
-      }
+//         // attach mongo id
+//         user.id = newUser._id.toString();
+//       } else {
+//         user.id = existingUser._id.toString();
+//       }
 
-      return session;
-    },
-  },
-};
+//       return true;
+//     },
+
+//     async jwt({ token, user }) {
+//       if (user) {
+//         token.id = user.id;
+//       }
+//       return token;
+//     },
+
+//     async session({ session, token }) {
+//       if (session.user) {
+//         session.user.id = token.id as string;
+//       }
+//       return session;
+//     },
+//   },
+// });
+
+// export { handler as GET, handler as POST };
+import NextAuth from "next-auth";
+import { authOptions } from "@/lib/auth-options";
 
 const handler = NextAuth(authOptions);
 

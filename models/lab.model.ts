@@ -12,13 +12,13 @@ const LabSchema = new Schema(
       required: true,
     },
 
-    topologyImage: {
-      type: String,
-    },
-
     config: {
       type: String,
       required: true,
+    },
+
+    topologyImage: {
+      type: String,
     },
 
     difficulty: {

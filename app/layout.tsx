@@ -1,12 +1,8 @@
-import type { Metadata } from "next";
-import Navbar from "@/components/layout/navbar";
-import Providers from "@/components/providers/session-provider";
 import "./globals.css";
 
-export const metadata: Metadata = {
-  title: "NetLab",
-  description: "",
-};
+import Navbar from "@/components/layout/navbar";
+import Providers from "@/components/providers/session-provider";
+import ThemeProvider from "@/components/providers/theme-provider";
 
 export default function RootLayout({
   children,
@@ -14,12 +10,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body>
-        <Providers>
-          <Navbar />
-          {children}
-        </Providers>
+        <ThemeProvider>
+          <Providers>
+            <Navbar />
+            {children}
+          </Providers>
+        </ThemeProvider>
       </body>
     </html>
   );
