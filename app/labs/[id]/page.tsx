@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-
+import LabCLI from "@/components/labs/lab-cli";
 import { connectDB } from "@/lib/db";
 import LabModel from "@/models/lab.model";
 import CopyConfigButton from "@/components/labs/copy-config-button";
@@ -93,6 +93,19 @@ export default async function LabPage({
           </div>
         </div>
       </div>
+
+      <LabCLI
+        onRun={async (cmd) => {
+          "use server";
+
+          // TEMP ENGINE LOGIC (we upgrade later)
+          if (cmd === "ping") {
+            return "Reply from 192.168.1.1: time=12ms";
+          }
+
+          return `Unknown command: ${cmd}`;
+        }}
+      />
     </div>
   );
 }
