@@ -1,15 +1,12 @@
-import React from "react";
-
-const page = () => {
-  return <div>page</div>;
-};
-
 import Link from "next/link";
 
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import type { LabPreview } from "@/types/lab";
+import DeleteLabButton from "@/components/labs/delete-lab-button";
 
 import { getMyLabs } from "@/lib/actions/lab.actions";
+import { Lab } from "@/types/lab";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -27,7 +24,7 @@ export default async function DashboardPage() {
         <div>
           <h1 className="text-3xl font-bold">My Labs</h1>
 
-          <p className="text-muted-foreground mt-2">
+          <p className="mt-2 text-muted-foreground">
             Manage your networking labs and configurations.
           </p>
         </div>
@@ -51,20 +48,36 @@ export default async function DashboardPage() {
         </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {labs.map((lab: any) => (
-            <Link
+          {labs.map((lab: LabPreview) => (
+            <div
               key={lab._id}
-              href={`/labs/${lab._id}`}
               className="rounded-2xl border p-5 transition hover:-translate-y-1 hover:shadow-lg"
             >
-              <p className="text-sm text-muted-foreground">{lab.difficulty}</p>
+              {/* CARD CLICK */}
+              <Link href={`/labs/${lab._id}`} className="block">
+                <p className="text-sm text-muted-foreground">
+                  {lab.difficulty}
+                </p>
 
-              <h2 className="mt-2 text-xl font-semibold">{lab.title}</h2>
+                <h2 className="mt-2 text-xl font-semibold">{lab.title}</h2>
 
-              <p className="mt-3 line-clamp-2 text-sm text-muted-foreground">
-                {lab.description}
-              </p>
-            </Link>
+                <p className="mt-3 line-clamp-2 text-sm text-muted-foreground">
+                  {lab.description}
+                </p>
+              </Link>
+
+              {/* ACTIONS */}
+              <div className="mt-5 flex items-center gap-3">
+                <Link
+                  href={`/labs/edit/${lab._id}`}
+                  className="rounded-lg border px-4 py-2 text-sm"
+                >
+                  Edit
+                </Link>
+
+                <DeleteLabButton id={lab._id} />
+              </div>
+            </div>
           ))}
         </div>
       )}
