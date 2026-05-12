@@ -24,6 +24,7 @@ export default function Navbar() {
         </Link>
 
         {/* Nav Links */}
+
         <nav className="flex items-center gap-6 text-sm">
           <Link href="/labs" className="hover:opacity-70">
             Labs

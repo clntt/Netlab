@@ -97,14 +97,7 @@ export default function HomeClient() {
       </section>
 
       {/* FEATURED LABS */}
-      <section
-        className={`
-          rounded-xl border p-5 transition hover:shadow-md
-          ${mode === "running" ? "shadow-blue-500/20 border-blue-500/30" : ""}
-          ${mode === "success" ? "shadow-green-500/20 border-green-500/30" : ""}
-          ${mode === "error" ? "shadow-red-500/20 border-red-500/30" : ""}
-        `}
-      >
+      <section className="mx-auto max-w-7xl px-4 py-24">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-3xl font-bold">Featured Labs</h2>
