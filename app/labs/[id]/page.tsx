@@ -4,6 +4,11 @@ import { connectDB } from "@/lib/db";
 import LabModel from "@/models/lab.model";
 import CopyConfigButton from "@/components/labs/copy-config-button";
 import type { Lab } from "@/types/lab";
+import { parseCommand } from "@/lib/engine/parser";
+import { executeCommand } from "@/lib/engine/execute";
+import { sampleLab } from "@/lib/engine/sample-lab";
+import { sampleSteps } from "@/lib/engine/sample-steps";
+import { validateStep } from "@/lib/engine/step-engine";
 
 export default async function LabPage({
   params,
@@ -95,15 +100,21 @@ export default async function LabPage({
       </div>
 
       <LabCLI
-        onRun={async (cmd) => {
+        onRun={async (input) => {
           "use server";
 
-          // TEMP ENGINE LOGIC (we upgrade later)
-          if (cmd === "ping") {
-            return "Reply from 192.168.1.1: time=12ms";
+          const parsed = parseCommand(input);
+          const result = executeCommand(sampleLab, parsed);
+
+          const step = sampleSteps[0]; // TEMP: step 1 only
+
+          const isValid = validateStep(step, input, result);
+
+          if (isValid) {
+            return `✅ Step completed: ${step.title}`;
           }
 
-          return `Unknown command: ${cmd}`;
+          return result;
         }}
       />
     </div>
