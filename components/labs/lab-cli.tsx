@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-
+import { useUIState } from "@/lib/ui/use-ui-state";
 import { Button } from "@/components/ui/button";
 
 export default function LabCLI({
@@ -11,16 +11,25 @@ export default function LabCLI({
   onRun: (cmd: string) => Promise<string>;
   prompt: string;
 }) {
+  const { setMode } = useUIState();
   const [cmd, setCmd] = useState("");
   const [logs, setLogs] = useState<string[]>([]);
   const [pending, startTransition] = useTransition();
 
   const runCommand = () => {
     startTransition(async () => {
-      const result = await onRun(cmd);
+      setMode("running");
 
-      setLogs((prev) => [...prev, `$ ${cmd}`, result]);
-      setCmd("");
+      try {
+        const result = await onRun(cmd);
+
+        setLogs((prev) => [...prev, `$ ${cmd}`, result]);
+        setCmd("");
+
+        setMode("success");
+      } catch (e) {
+        setMode("error");
+      }
     });
   };
 

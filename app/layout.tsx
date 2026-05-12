@@ -1,9 +1,7 @@
-import "./globals.css";
-
 import Navbar from "@/components/layout/navbar";
 import Providers from "@/components/providers/session-provider";
-import ThemeProvider from "@/components/providers/theme-provider";
-
+import { Toaster } from "@/components/ui/sonner";
+import "./globals.css";
 export default function RootLayout({
   children,
 }: {
@@ -11,13 +9,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body>
-        <ThemeProvider>
-          <Providers>
-            <Navbar />
-            {children}
-          </Providers>
-        </ThemeProvider>
+      <body className="transition-colors duration-300">
+        <Providers>
+          <Navbar />
+          {children}
+          <Toaster richColors position="top-right" />
+        </Providers>
       </body>
     </html>
   );
