@@ -6,8 +6,10 @@ import { Button } from "@/components/ui/button";
 
 export default function LabCLI({
   onRun,
+  prompt,
 }: {
   onRun: (cmd: string) => Promise<string>;
+  prompt: string;
 }) {
   const [cmd, setCmd] = useState("");
   const [logs, setLogs] = useState<string[]>([]);
@@ -31,6 +33,7 @@ export default function LabCLI({
       </div>
 
       <div className="flex gap-2">
+        <span className="text-green-400 font-mono">{prompt}</span>
         <input
           value={cmd}
           onChange={(e) => setCmd(e.target.value)}

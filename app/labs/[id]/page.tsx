@@ -10,7 +10,9 @@ import { sampleLab } from "@/lib/engine/sample-lab";
 import { sampleSteps } from "@/lib/engine/sample-steps";
 import { validateStep } from "@/lib/engine/step-engine";
 import { getState, updateState } from "@/lib/engine/state-store";
-
+import { getPrompt } from "@/lib/engine/prompt";
+import { createInitialState } from "@/lib/engine/create-state";
+import { setState } from "@/lib/engine/state-store";
 export default async function LabPage({
   params,
 }: {
@@ -23,6 +25,20 @@ export default async function LabPage({
   const lab = await LabModel.findById(id).lean<Lab>();
 
   if (!lab) return notFound();
+
+  const state = getState("user-1-lab-1");
+
+  const prompt = state ? getPrompt(state.devices[0]) : "Router1>";
+
+  const sessionId = "user-1-lab-1";
+
+  let sessionState = getState(sessionId);
+
+  if (!state) {
+    sessionState = createInitialState(id, "user-1");
+
+    setState(sessionId, sessionState);
+  }
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-10 space-y-10">
@@ -101,6 +117,7 @@ export default async function LabPage({
       </div>
 
       <LabCLI
+        prompt={prompt}
         onRun={async (input) => {
           "use server";
 

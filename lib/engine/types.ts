@@ -1,15 +1,17 @@
+export type DeviceMode = "user" | "privileged" | "config" | "interface";
+
 export type Device = {
   id: string;
   name: string;
   type: "router" | "switch" | "pc";
 
-  mode: "exec" | "config";
+  mode: DeviceMode;
 
   interfaces: Record<
     string,
     {
       ip?: string;
-      status?: "up" | "down";
+      status: "up" | "down";
     }
   >;
 
@@ -24,9 +26,19 @@ export type LabState = {
 
   devices: Device[];
 
+  links: Link[];
+
   logs: {
     input: string;
     output: string;
     timestamp: number;
   }[];
+};
+
+export type Link = {
+  fromDevice: string;
+  fromInterface: string;
+
+  toDevice: string;
+  toInterface: string;
 };
