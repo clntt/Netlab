@@ -9,6 +9,7 @@ import { executeCommand } from "@/lib/engine/execute";
 import { sampleLab } from "@/lib/engine/sample-lab";
 import { sampleSteps } from "@/lib/engine/sample-steps";
 import { validateStep } from "@/lib/engine/step-engine";
+import { getState, updateState } from "@/lib/engine/state-store";
 
 export default async function LabPage({
   params,
@@ -103,18 +104,17 @@ export default async function LabPage({
         onRun={async (input) => {
           "use server";
 
-          const parsed = parseCommand(input);
-          const result = executeCommand(sampleLab, parsed);
+          const sessionId = "user-1-lab-1"; // later from DB
 
-          const step = sampleSteps[0]; // TEMP: step 1 only
+          const state = getState(sessionId);
 
-          const isValid = validateStep(step, input, result);
+          if (!state) throw new Error("No session state");
 
-          if (isValid) {
-            return `✅ Step completed: ${step.title}`;
-          }
+          const { output, newState } = executeCommand(state, input);
 
-          return result;
+          updateState(sessionId, () => newState);
+
+          return output;
         }}
       />
     </div>

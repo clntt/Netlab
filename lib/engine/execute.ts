@@ -1,28 +1,48 @@
-import { NetworkState } from "./network-state";
-import { ParsedCommand } from "./parser";
+import { LabState } from "./types";
 
 export function executeCommand(
-  state: NetworkState,
-  cmd: ParsedCommand
-): string {
-  switch (cmd.type) {
-    case "ping": {
-      const target = state.devices.find((d) =>
-        Object.values(d.interfaces).includes(cmd.target)
-      );
+  state: LabState,
+  input: string
+): { output: string; newState: LabState } {
+  const parts = input.trim().split(" ");
+  const cmd = parts[0];
 
-      if (!target) {
-        return `Request timed out. Host unreachable: ${cmd.target}`;
-      }
+  // 🧠 PING
+  if (cmd === "ping") {
+    const target = parts[1];
 
-      return `Reply from ${cmd.target}: time=12ms TTL=64`;
-    }
+    const hasDevice = state.devices.some((d) =>
+      Object.values(d.interfaces).some((i) => i.ip === target)
+    );
 
-    case "show": {
-      return state.devices.map((d) => `${d.name} (${d.type})`).join("\n");
-    }
+    const output = hasDevice
+      ? `Reply from ${target}: time=12ms`
+      : `Destination unreachable`;
 
-    default:
-      return `Unknown command`;
+    return {
+      output,
+      newState: {
+        ...state,
+        logs: [...state.logs, { input, output, timestamp: Date.now() }],
+      },
+    };
   }
+
+  // 🧠 SHOW
+  if (cmd === "show") {
+    const output = state.devices.map((d) => `${d.name} (${d.type})`).join("\n");
+
+    return {
+      output,
+      newState: {
+        ...state,
+        logs: [...state.logs, { input, output, timestamp: Date.now() }],
+      },
+    };
+  }
+
+  return {
+    output: "Unknown command",
+    newState: state,
+  };
 }
